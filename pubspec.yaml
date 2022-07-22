@@ -63,6 +63,10 @@ flutter:
     - assets/images/
     - assets/images/Background/
     - assets/images/Owlet_Monster/
+    - assets/images/Bunny/
+    - assets/images/AngryPig/
+    - assets/images/Rino/
+    - assets/images/Chicken/
     - assets/audio/
   #   - images/a_dot_ham.jpeg
 

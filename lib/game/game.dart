@@ -28,7 +28,7 @@ class TinyGame extends FlameGame with TapDetector {
         ParallaxImageData('Background/Layer_0001_8.png'),
         ParallaxImageData('Background/Layer_0000_9.png'),
       ],
-      baseVelocity: Vector2(0.5, 0), // Map Move Speed
+      baseVelocity: Vector2(0.2, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
     addAll([_parallaxComponent, _owlet, _owlet.dust]);
@@ -38,17 +38,11 @@ class TinyGame extends FlameGame with TapDetector {
 
   @override
   void update(double dt) {
-    if (!_owlet.onGround() && _owlet.dust.active) {
-      // Owlet not on ground & Dust = active?
-      _owlet.dust.x += _owlet.dust.x * 10 / 100;
+    if (!_owlet.onGround()) {
       _owlet.dust.jumpDust();
-      _owlet.dust.active = false;
     }
-    if (_owlet.onGround() && !_owlet.dust.active) {
-      // Owlet on ground & Dust != active?
-      _owlet.dust.x -= _owlet.dust.x * 10 / 100;
+    if (_owlet.onGround()) {
       _owlet.dust.runDust();
-      _owlet.dust.active = true;
     }
     super.update(dt);
   }

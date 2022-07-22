@@ -50,18 +50,15 @@ class Owlet extends SpriteAnimationComponent {
     _deathAnimation = deathSprite.createAnimation(row: 0, stepTime: 0.1);
 
     owl.animation = _runAnimation; // default animation is to run
-    owl.size = Vector2(32, 32);
-    owl.position = Vector2.all(100);
-
     owl.dust = await Dust.create();
     return owl;
   }
 
   @override
   void onGameResize(Vector2 size) {
-    height = width = size.y / 10; //        1/10th of the screen's height
+    height = width = size.y / 7; //        1/7.5 of the screen's height
     x = size.x - size.x * 85 / 100;
-    y = size.y - size.y * 18 / 100;
+    y = size.y - size.y * 24.5 / 100;
     skyToGround = y;
     super.onGameResize(size);
   }

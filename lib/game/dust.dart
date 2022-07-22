@@ -5,6 +5,7 @@ import 'package:flame/sprite.dart';
 
 class Dust extends SpriteAnimationComponent {
   bool active;
+  late Vector2 sz;
 
   static late SpriteAnimation _runDustAnimation;
   static late SpriteAnimation _jumpDustAnimation;
@@ -37,10 +38,23 @@ class Dust extends SpriteAnimationComponent {
 
   @override
   void onGameResize(Vector2 size) {
-    height = width = size.y / 10;
-    x = size.x - size.x * 86.5 / 100;
-    y = size.y - size.y * 18 / 100;
+    sz = size;
+    height = width = size.y / 8;
+    x = size.x - size.x * 87 / 100;
+    y = size.y - size.y * 22.5 / 100;
     super.onGameResize(size);
+  }
+
+  @override
+  void update(double dt) {
+    if (animation == _runDustAnimation) {
+      x = sz.x - sz.x * 87 / 100;
+      y = sz.y - sz.y * 22.5 / 100;
+    } else if (animation == _jumpDustAnimation) {
+      x = sz.x - sz.x * 85 / 100;
+      y = sz.y - sz.y * 21.5 / 100;
+    }
+    super.update(dt);
   }
 
   void runDust() {
