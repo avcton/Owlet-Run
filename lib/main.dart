@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: "Tiny Forest Heroes",
+      title: "Owlet Run",
       home: MyGameApp(),
     );
   }

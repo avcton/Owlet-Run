@@ -1,18 +1,16 @@
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
-import 'package:my_game/game/dust.dart';
 import 'package:my_game/game/owlet.dart';
 
-class TinyGame extends FlameGame {
+class TinyGame extends FlameGame with TapDetector {
   late Owlet _owlet; // Animations for the Owlet
-  late WalkDust _walkDust; // Dust Animations
   late ParallaxComponent _parallaxComponent; // Map
 
   @override
   Future<void>? onLoad() async {
     _owlet = await Owlet.create();
-    _walkDust = await WalkDust.create();
 
     _parallaxComponent = await loadParallaxComponent(
       [
@@ -33,10 +31,31 @@ class TinyGame extends FlameGame {
       baseVelocity: Vector2(0.5, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
+    addAll([_parallaxComponent, _owlet, _owlet.dust]);
 
-    add(_parallaxComponent);
-    add(_owlet);
-    add(_walkDust);
     return super.onLoad();
+  }
+
+  @override
+  void update(double dt) {
+    if (!_owlet.onGround() && _owlet.dust.active) {
+      // Owlet not on ground & Dust = active?
+      _owlet.dust.x += _owlet.dust.x * 10 / 100;
+      _owlet.dust.jumpDust();
+      _owlet.dust.active = false;
+    }
+    if (_owlet.onGround() && !_owlet.dust.active) {
+      // Owlet on ground & Dust != active?
+      _owlet.dust.x -= _owlet.dust.x * 10 / 100;
+      _owlet.dust.runDust();
+      _owlet.dust.active = true;
+    }
+    super.update(dt);
+  }
+
+  @override
+  void onTapDown(TapDownInfo info) {
+    _owlet.jump();
+    super.onTapDown(info);
   }
 }
