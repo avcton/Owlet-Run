@@ -2,15 +2,18 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
+import 'package:my_game/game/enemy.dart';
 import 'package:my_game/game/owlet.dart';
 
 class TinyGame extends FlameGame with TapDetector {
   late Owlet _owlet; // Animations for the Owlet
+  late Enemy _enemy;
   late ParallaxComponent _parallaxComponent; // Map
 
   @override
   Future<void>? onLoad() async {
     _owlet = await Owlet.create();
+    _enemy = await Enemy.create(EnemyType.bunny);
 
     _parallaxComponent = await loadParallaxComponent(
       [
@@ -31,7 +34,7 @@ class TinyGame extends FlameGame with TapDetector {
       baseVelocity: Vector2(0.2, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
-    addAll([_parallaxComponent, _owlet, _owlet.dust]);
+    addAll([_parallaxComponent, _owlet, _owlet.dust, _enemy]);
 
     return super.onLoad();
   }
