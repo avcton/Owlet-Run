@@ -1,27 +1,22 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/image_composition.dart';
 import 'package:flame/parallax.dart';
 import 'package:my_game/game/dust.dart';
 import 'package:my_game/game/owlet.dart';
 
 class TinyGame extends FlameGame {
   late Owlet _owlet; // Animations for the Owlet
-  late WalkDust _walkDust;
-  late ParallaxComponent _parallaxComponent;
+  late WalkDust _walkDust; // Dust Animations
+  late ParallaxComponent _parallaxComponent; // Map
 
   @override
   Future<void>? onLoad() async {
-    Image owletImage =
-        await images.load('Owlet_Monster/Owlet_Monster_Run_6.png');
-    Image dustImage =
-        await images.load('Owlet_Monster/Walk_Run_Push_Dust_6.png');
-
-    _owlet = Owlet(sprite: owletImage, vec: Vector2(32, 32));
-    _walkDust = WalkDust(sprite: dustImage, vec: Vector2(32, 32));
+    _owlet = await Owlet.create();
+    _walkDust = await WalkDust.create();
 
     _parallaxComponent = await loadParallaxComponent(
       [
+        // Parallax Forest Background
         ParallaxImageData('Background/Layer_0011_0.png'),
         ParallaxImageData('Background/Layer_0010_1.png'),
         ParallaxImageData('Background/Layer_0009_2.png'),
@@ -35,7 +30,7 @@ class TinyGame extends FlameGame {
         ParallaxImageData('Background/Layer_0001_8.png'),
         ParallaxImageData('Background/Layer_0000_9.png'),
       ],
-      baseVelocity: Vector2(0.5, 0),
+      baseVelocity: Vector2(0.5, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
 
