@@ -9,11 +9,17 @@ class TinyGame extends FlameGame with TapDetector {
   late Owlet _owlet; // Animations for the Owlet
   late Enemy _enemy;
   late ParallaxComponent _parallaxComponent; // Map
+  late TextBoxComponent scoreBoxComponent;
+  late double score;
+
+  TinyGame() {
+    scoreBoxComponent = TextBoxComponent();
+  }
 
   @override
   Future<void>? onLoad() async {
     _owlet = await Owlet.create();
-    _enemy = await Enemy.create(EnemyType.bunny);
+    _enemy = await Enemy.create(EnemyType.chicken);
 
     _parallaxComponent = await loadParallaxComponent(
       [
@@ -34,13 +40,26 @@ class TinyGame extends FlameGame with TapDetector {
       baseVelocity: Vector2(0.2, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
-    addAll([_parallaxComponent, _owlet, _owlet.dust, _enemy]);
 
+    score = 0;
+    scoreBoxComponent = TextBoxComponent(
+        text: score.toString(),
+        align: Anchor.center,
+        children: [TextComponent(text: "Score: ", position: Vector2(0, 8))]);
+
+    addAll(
+        [_parallaxComponent, _owlet, _owlet.dust, _enemy, scoreBoxComponent]);
+
+    onGameResize(canvasSize);
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
+    // Score Manipulation
+    score += 10 * dt;
+    scoreBoxComponent.text = score.toStringAsFixed(0);
+
     if (!_owlet.onGround()) {
       _owlet.dust.jumpDust();
     }
@@ -48,6 +67,13 @@ class TinyGame extends FlameGame with TapDetector {
       _owlet.dust.runDust();
     }
     super.update(dt);
+  }
+
+  @override
+  void onGameResize(Vector2 canvasSize) {
+    scoreBoxComponent.x = canvasSize.x / 2 - scoreBoxComponent.width / 2 + 15;
+    scoreBoxComponent.y = canvasSize.y - canvasSize.y * 85 / 100;
+    super.onGameResize(canvasSize);
   }
 
   @override
