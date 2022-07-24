@@ -1,3 +1,4 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/image_composition.dart';
@@ -12,7 +13,7 @@ class EnemyDetails {
   EnemyDetails({required this.imageName, required this.x, required this.y});
 }
 
-class Enemy extends SpriteAnimationComponent {
+class Enemy extends SpriteAnimationComponent with CollisionCallbacks {
   late Vector2 sz;
   static const double speed = 200.0;
   static late SpriteAnimation _runAnimation; // Run
@@ -48,19 +49,26 @@ class Enemy extends SpriteAnimationComponent {
   @override
   void onGameResize(Vector2 size) {
     sz = size;
-    height = width = size.y / 7; //        1/7.5 of the screen's height
+    height = width = size.y /
+        8; //        1/8 of the screen's height - matching that of owlet's height
     x = size.x + width;
-    y = size.y - size.y * 24.5 / 100;
+    y = size.y - size.y * 22 / 100;
     super.onGameResize(size);
+  }
+
+  @override
+  void onMount() {
+    add(RectangleHitbox.relative(Vector2(0.5, 0.8), parentSize: size));
+    super.onMount();
   }
 
   @override
   void update(double dt) {
     x -= speed * dt;
 
-    // If enemy reaches the end of the screen
+    // If enemy reaches the end of the screen -- remove it
     if (x < -width) {
-      x = sz.x + width;
+      removeFromParent();
     }
     super.update(dt);
   }

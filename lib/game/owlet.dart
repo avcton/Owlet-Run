@@ -1,10 +1,12 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame/sprite.dart';
 import 'package:my_game/game/dust.dart';
+import 'package:my_game/game/enemy.dart';
 
-class Owlet extends SpriteAnimationComponent {
+class Owlet extends SpriteAnimationComponent with CollisionCallbacks {
   late Dust dust; // Dust of the Owlet
 
   static late SpriteAnimation _idleAnimation; // idle
@@ -13,10 +15,18 @@ class Owlet extends SpriteAnimationComponent {
   static late SpriteAnimation _deathAnimation; // Death
 
   static const gravity = 1000;
-  double speedY = 0.0;
+  late double speedY, initialV;
+  bool isHit = false;
+  late Timer _timer;
   double skyToGround = 0.0; // Distance from sky to the ground
 
-  Owlet();
+  Owlet() {
+    _timer = Timer(1, onTick: () {
+      // Hurt animation for 1 second
+      isHit = false;
+      run();
+    });
+  }
 
   static Future<Owlet> create() async {
     final owl = Owlet();
@@ -56,9 +66,10 @@ class Owlet extends SpriteAnimationComponent {
 
   @override
   void onGameResize(Vector2 size) {
-    height = width = size.y / 7; //        1/7.5 of the screen's height
-    x = size.x - size.x * 85 / 100;
-    y = size.y - size.y * 24.5 / 100;
+    speedY = initialV = -200 - (size.y); // Equation to get initial velocity
+    height = width = size.y / 7; //        1/7 of the screen's height
+    x = size.x - size.x * 81 / 100;
+    y = size.y - size.y * 24 / 100;
     skyToGround = y;
     super.onGameResize(size);
   }
@@ -81,7 +92,14 @@ class Owlet extends SpriteAnimationComponent {
       speedY = 0.0;
     }
 
+    _timer.update(dt);
     super.update(dt);
+  }
+
+  @override
+  void onMount() {
+    add(RectangleHitbox.relative(Vector2(0.6, 0.8), parentSize: size));
+    super.onMount();
   }
 
   bool onGround() {
@@ -94,7 +112,9 @@ class Owlet extends SpriteAnimationComponent {
   }
 
   void run() {
-    animation = _runAnimation;
+    if (!isHit) {
+      animation = _runAnimation;
+    }
   }
 
   void hurt() {
@@ -107,8 +127,18 @@ class Owlet extends SpriteAnimationComponent {
 
   void jump() {
     if (onGround()) {
-      idle();
-      speedY = -600;
+      !isHit ? idle() : hurt();
+      speedY = initialV;
     }
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    if ((other is Enemy && !isHit)) {
+      hurt();
+      isHit = true;
+      _timer.start();
+    }
+    super.onCollision(intersectionPoints, other);
   }
 }

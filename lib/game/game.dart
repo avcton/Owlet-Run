@@ -2,24 +2,30 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
-import 'package:my_game/game/enemy.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_game/game/owlet.dart';
+import 'package:my_game/packages/enemy_generator.dart';
 
-class TinyGame extends FlameGame with TapDetector {
+class TinyGame extends FlameGame
+    with KeyboardEvents, TapDetector, HasCollisionDetection {
   late Owlet _owlet; // Animations for the Owlet
-  late Enemy _enemy;
+  late EnemyGenerator enemyGenerator;
   late ParallaxComponent _parallaxComponent; // Map
-  late TextBoxComponent scoreBoxComponent;
+  late TextComponent scoreComponent;
+  late TextComponent scoreTitle;
   late double score;
+  bool isPaused = false;
 
   TinyGame() {
-    scoreBoxComponent = TextBoxComponent();
+    enemyGenerator = EnemyGenerator();
+    scoreComponent = TextComponent();
+    scoreTitle = TextComponent();
   }
 
   @override
   Future<void>? onLoad() async {
     _owlet = await Owlet.create();
-    _enemy = await Enemy.create(EnemyType.chicken);
 
     _parallaxComponent = await loadParallaxComponent(
       [
@@ -42,13 +48,32 @@ class TinyGame extends FlameGame with TapDetector {
     );
 
     score = 0;
-    scoreBoxComponent = TextBoxComponent(
-        text: score.toString(),
-        align: Anchor.center,
-        children: [TextComponent(text: "Score: ", position: Vector2(0, 8))]);
+    scoreTitle = TextComponent(
+      text: "Score",
+      textRenderer: TextPaint(
+          style: TextStyle(
+              fontFamily: 'Audiowide', fontSize: size.y - size.y * 90 / 100)),
+    );
 
-    addAll(
-        [_parallaxComponent, _owlet, _owlet.dust, _enemy, scoreBoxComponent]);
+    scoreComponent = TextComponent(
+        text: score.toStringAsFixed(0),
+        anchor: Anchor.topCenter,
+        textRenderer: TextPaint(
+            style: TextStyle(
+                fontFamily: 'Audiowide',
+                fontSize: size.y - size.y * 94 / 100,
+                color: Colors.yellow)));
+
+    addAll([
+      _parallaxComponent,
+      _owlet,
+      _owlet.dust,
+      enemyGenerator,
+      scoreTitle,
+      scoreComponent,
+    ]);
+
+    overlays.add("Pause Button");
 
     onGameResize(canvasSize);
     return super.onLoad();
@@ -57,28 +82,53 @@ class TinyGame extends FlameGame with TapDetector {
   @override
   void update(double dt) {
     // Score Manipulation
-    score += 10 * dt;
-    scoreBoxComponent.text = score.toStringAsFixed(0);
+    score += 60 * dt;
+    scoreComponent.text = score.toStringAsFixed(0);
 
+    // Smoke run / jump Animation
     if (!_owlet.onGround()) {
       _owlet.dust.jumpDust();
     }
     if (_owlet.onGround()) {
       _owlet.dust.runDust();
     }
+
     super.update(dt);
   }
 
   @override
   void onGameResize(Vector2 canvasSize) {
-    scoreBoxComponent.x = canvasSize.x / 2 - scoreBoxComponent.width / 2 + 15;
-    scoreBoxComponent.y = canvasSize.y - canvasSize.y * 85 / 100;
+    // Score Title Resizing
+    scoreTitle.x = canvasSize.x / 2 -
+        scoreComponent.width / 2 -
+        (canvasSize.x - canvasSize.x * 93 / 100);
+    scoreTitle.y = canvasSize.y - canvasSize.y * 88 / 100;
+
+    // Score Resizing
+    scoreComponent.x = canvasSize.x / 2 - scoreComponent.width / 2;
+    scoreComponent.y = canvasSize.y - canvasSize.y * 75 / 100;
     super.onGameResize(canvasSize);
   }
 
   @override
   void onTapDown(TapDownInfo info) {
+    // Screen Touch Taps
     _owlet.jump();
     super.onTapDown(info);
+  }
+
+  @override
+  KeyEventResult onKeyEvent(
+      // Keyboard Space Taps
+      RawKeyEvent event,
+      Set<LogicalKeyboardKey> keysPressed) {
+    final isSpace = keysPressed.contains(LogicalKeyboardKey.space);
+
+    if (isSpace) {
+      _owlet.jump();
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
   }
 }
