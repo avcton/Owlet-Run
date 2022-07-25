@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flame: ^1.2.1
   flame_splash_screen: ^0.1.0
+  flutter_native_splash: ^2.2.6
 
 dev_dependencies:
   flutter_test:
@@ -96,3 +97,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#000000"

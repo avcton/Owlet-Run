@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/foundation.dart';
 import 'package:my_game/game/dust.dart';
 import 'package:my_game/game/enemy.dart';
 
@@ -18,9 +19,11 @@ class Owlet extends SpriteAnimationComponent with CollisionCallbacks {
   late double speedY, initialV;
   bool isHit = false;
   late Timer _timer;
+  late ValueNotifier<int> life;
   double skyToGround = 0.0; // Distance from sky to the ground
 
   Owlet() {
+    life = ValueNotifier(3); // 3 Lives
     _timer = Timer(1, onTick: () {
       // Hurt animation for 1 second
       isHit = false;
@@ -136,6 +139,7 @@ class Owlet extends SpriteAnimationComponent with CollisionCallbacks {
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     if ((other is Enemy && !isHit)) {
       hurt();
+      life.value -= 1;
       isHit = true;
       _timer.start();
     }

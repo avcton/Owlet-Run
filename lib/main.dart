@@ -2,10 +2,14 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame_splash_screen/flame_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:my_game/game/game.dart';
+import 'package:my_game/screens/game_over.dart';
+import 'package:my_game/screens/lives.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
   runApp(const MyApp());
@@ -16,9 +20,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    FlutterNativeSplash.remove();
+    return MaterialApp(
       title: "Owlet Run",
       home: MyGameApp(),
+      theme: ThemeData(
+          textTheme: const TextTheme(
+              headline1: TextStyle(
+        fontFamily: "Audiowide",
+        color: Colors.white,
+      ))),
     );
   }
 }
@@ -53,6 +64,12 @@ class _MyGameAppState extends State<MyGameApp>
                       game: _myGame,
                       overlayBuilderMap: {
                         'Pause Button': pauseButton,
+                        'Lives': (context, game) {
+                          return livesHud(_myGame);
+                        },
+                        'Game Over': (context, game) {
+                          return gameOver(_myGame);
+                        }
                       },
                     )))),
         theme: FlameSplashTheme.dark);
@@ -63,8 +80,9 @@ class _MyGameAppState extends State<MyGameApp>
       elevation: 100,
       color: Colors.transparent,
       child: Padding(
-        padding:
-            EdgeInsets.only(top: _myGame.size.y - _myGame.size.y * 90 / 100),
+        padding: EdgeInsets.only(
+            top: _myGame.size.y - _myGame.size.y * 88 / 100,
+            left: _myGame.size.x - _myGame.size.x * 95 / 100),
         child: GestureDetector(
           onTap: playPauseTapped,
           child: AnimatedIcon(

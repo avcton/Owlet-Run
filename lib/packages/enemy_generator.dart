@@ -48,4 +48,11 @@ class EnemyGenerator extends Component with HasGameRef<TinyGame> {
     }
     super.update(dt);
   }
+
+  void removeAllEnemy() {
+    final enemies = gameRef.children.whereType<Enemy>();
+    for (var enemy in enemies) {
+      enemy.removeFromParent();
+    }
+  }
 }

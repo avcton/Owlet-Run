@@ -9,7 +9,7 @@ import 'package:my_game/packages/enemy_generator.dart';
 
 class TinyGame extends FlameGame
     with KeyboardEvents, TapDetector, HasCollisionDetection {
-  late Owlet _owlet; // Animations for the Owlet
+  late Owlet owlet; // Animations for the Owlet
   late EnemyGenerator enemyGenerator;
   late ParallaxComponent _parallaxComponent; // Map
   late TextComponent scoreComponent;
@@ -25,7 +25,7 @@ class TinyGame extends FlameGame
 
   @override
   Future<void>? onLoad() async {
-    _owlet = await Owlet.create();
+    owlet = await Owlet.create();
 
     _parallaxComponent = await loadParallaxComponent(
       [
@@ -43,7 +43,7 @@ class TinyGame extends FlameGame
         ParallaxImageData('Background/Layer_0001_8.png'),
         ParallaxImageData('Background/Layer_0000_9.png'),
       ],
-      baseVelocity: Vector2(0.2, 0), // Map Move Speed
+      baseVelocity: Vector2(0.3, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
 
@@ -66,14 +66,15 @@ class TinyGame extends FlameGame
 
     addAll([
       _parallaxComponent,
-      _owlet,
-      _owlet.dust,
+      owlet,
+      owlet.dust,
       enemyGenerator,
       scoreTitle,
       scoreComponent,
     ]);
 
     overlays.add("Pause Button");
+    overlays.add("Lives");
 
     onGameResize(canvasSize);
     return super.onLoad();
@@ -81,16 +82,19 @@ class TinyGame extends FlameGame
 
   @override
   void update(double dt) {
+    // Game Over Check
+    gameOver();
+
     // Score Manipulation
     score += 60 * dt;
     scoreComponent.text = score.toStringAsFixed(0);
 
     // Smoke run / jump Animation
-    if (!_owlet.onGround()) {
-      _owlet.dust.jumpDust();
+    if (!owlet.onGround()) {
+      owlet.dust.jumpDust();
     }
-    if (_owlet.onGround()) {
-      _owlet.dust.runDust();
+    if (owlet.onGround()) {
+      owlet.dust.runDust();
     }
 
     super.update(dt);
@@ -99,13 +103,11 @@ class TinyGame extends FlameGame
   @override
   void onGameResize(Vector2 canvasSize) {
     // Score Title Resizing
-    scoreTitle.x = canvasSize.x / 2 -
-        scoreComponent.width / 2 -
-        (canvasSize.x - canvasSize.x * 93 / 100);
+    scoreTitle.x = (canvasSize.x - scoreComponent.width - scoreTitle.width) / 2;
     scoreTitle.y = canvasSize.y - canvasSize.y * 88 / 100;
 
     // Score Resizing
-    scoreComponent.x = canvasSize.x / 2 - scoreComponent.width / 2;
+    scoreComponent.x = (canvasSize.x - scoreComponent.width) / 2;
     scoreComponent.y = canvasSize.y - canvasSize.y * 75 / 100;
     super.onGameResize(canvasSize);
   }
@@ -113,8 +115,18 @@ class TinyGame extends FlameGame
   @override
   void onTapDown(TapDownInfo info) {
     // Screen Touch Taps
-    _owlet.jump();
+    owlet.jump();
     super.onTapDown(info);
+  }
+
+  void gameOver() async {
+    if (owlet.life.value <= 0) {
+      enemyGenerator.removeAllEnemy();
+      owlet.die();
+      await Future.delayed(const Duration(milliseconds: 500));
+      overlays.add('Game Over');
+      pauseEngine();
+    }
   }
 
   @override
@@ -125,7 +137,7 @@ class TinyGame extends FlameGame
     final isSpace = keysPressed.contains(LogicalKeyboardKey.space);
 
     if (isSpace) {
-      _owlet.jump();
+      owlet.jump();
       return KeyEventResult.handled;
     }
 
