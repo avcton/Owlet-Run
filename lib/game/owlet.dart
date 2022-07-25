@@ -36,7 +36,7 @@ class Owlet extends SpriteAnimationComponent with CollisionCallbacks {
 
     // Idle Animation initialization
     Image owletIdleImage =
-        await Flame.images.load('Owlet_Monster/Owlet_Monster_Idle_4.png');
+        await Flame.images.load('Owlet_Monster/Owlet_Monster_Jump_8.png');
     final idleSprite =
         SpriteSheet(image: owletIdleImage, srcSize: Vector2(32, 32));
     _idleAnimation = idleSprite.createAnimation(row: 0, stepTime: 0.1);

@@ -1,14 +1,16 @@
+import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:my_game/game/game.dart';
+import 'package:my_game/packages/enemy_generator.dart';
 
-Widget gameOver(TinyGame gameref) {
+Widget gameOver(BuildContext context, TinyGame gameref) {
   return Material(
     color: Colors.transparent,
     child: Center(
       child: Card(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withOpacity(0.5),
         child: Padding(
-          padding: EdgeInsets.all(gameref.size.y - gameref.size.y * 92 / 100),
+          padding: EdgeInsets.all(gameref.size.y - gameref.size.y * 90 / 100),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(
               "Game Over",
@@ -18,28 +20,58 @@ Widget gameOver(TinyGame gameref) {
                 color: Colors.white,
               ),
             ),
+            SizedBox(height: gameref.size.y - gameref.size.y * 99 / 100),
             Text(
-              "Your Score is ${gameref.score.toStringAsFixed(0)}",
+              "Your Score is",
               style: TextStyle(
                 fontSize: gameref.size.y - gameref.size.y * 95 / 100,
                 fontFamily: "Audiowide",
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: gameref.size.y - gameref.size.y * 95 / 100),
+            Text(
+              gameref.score.toStringAsFixed(0),
+              style: TextStyle(
+                fontSize: gameref.size.y - gameref.size.y * 90 / 100,
+                fontFamily: "Audiowide",
+                color: Colors.yellow,
+              ),
+            ),
+            SizedBox(height: gameref.size.y - gameref.size.y * 97 / 100),
             MaterialButton(
               color: Colors.blue,
               onPressed: () {
                 gameref.overlays.remove('Game Over');
 
+                gameref.enemyGenerator.resetTimer();
+                EnemyGenerator.spawnLevel = 0;
+                gameref.enemyGenerator.removeAllEnemy();
                 gameref.score = 0;
                 gameref.owlet.life.value = 3;
-                gameref.enemyGenerator.removeAllEnemy();
+                gameref.addAll([gameref.scoreTitle, gameref.scoreComponent]);
+                gameref.currentSpeed = 0.2;
+                gameref.parallaxComponent.parallax?.baseVelocity =
+                    Vector2(gameref.currentSpeed, 0);
 
                 gameref.resumeEngine();
               },
               child: Text(
                 "Retry",
+                style: TextStyle(
+                  fontSize: gameref.size.y - gameref.size.y * 95 / 100,
+                  fontFamily: "Audiowide",
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            MaterialButton(
+              color: Colors.blue,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Main Menu",
                 style: TextStyle(
                   fontSize: gameref.size.y - gameref.size.y * 95 / 100,
                   fontFamily: "Audiowide",

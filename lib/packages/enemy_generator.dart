@@ -10,6 +10,10 @@ class EnemyGenerator extends Component with HasGameRef<TinyGame> {
 
   EnemyGenerator() {
     _rand = Random();
+    resetTimer();
+  }
+
+  void resetTimer() {
     _timer = Timer(3, repeat: true, onTick: () {
       // 3 secs to next enemy generated
       spawnEnemy();
@@ -33,15 +37,17 @@ class EnemyGenerator extends Component with HasGameRef<TinyGame> {
   void update(double dt) {
     _timer.update(dt);
 
-    var newSpawnLevel = gameRef.score ~/ 500;
+    var newSpawnLevel = gameRef.score ~/ 300;
     if (newSpawnLevel > spawnLevel) {
       spawnLevel = newSpawnLevel;
+      gameRef.parallaxComponent.parallax?.baseVelocity = Vector2(
+          gameRef.currentSpeed += spawnLevel / 500,
+          0); // Increasing the map speed w.r.t enemy spawning
 
       var newWaitTime = (4 / (1 + (0.1 * spawnLevel)));
-
       _timer.stop();
       _timer = Timer(newWaitTime, repeat: true, onTick: () {
-        // 3 secs to next enemy generated
+        // New wait time to next enemy generated
         spawnEnemy();
       });
       _timer.start();

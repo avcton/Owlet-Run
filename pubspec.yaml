@@ -37,6 +37,8 @@ dependencies:
   flame: ^1.2.1
   flame_splash_screen: ^0.1.0
   flutter_native_splash: ^2.2.6
+  url_launcher: ^6.1.5
+  flutter_launcher_icons: ^0.9.3
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +71,7 @@ flutter:
     - assets/images/AngryPig/
     - assets/images/Rino/
     - assets/images/Chicken/
+    - assets/images/Bat/
     - assets/audio/
   #   - images/a_dot_ham.jpeg
 
@@ -99,4 +102,16 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 flutter_native_splash:
+  image: assets/images/avcton_logo_1024.png
   color: "#000000"
+
+  android_12:
+    image: assets/images/avcton_logo_1024.png
+    color: "#000000"
+
+  web: false
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/1024.png"

@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:my_game/game/game.dart';
 import 'package:my_game/screens/game_over.dart';
 import 'package:my_game/screens/lives.dart';
+import 'package:my_game/screens/main_menu.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,14 @@ class MyApp extends StatelessWidget {
     FlutterNativeSplash.remove();
     return MaterialApp(
       title: "Owlet Run",
-      home: MyGameApp(),
+      debugShowCheckedModeBanner: false,
+      home: FlameSplashScreen(
+        theme: FlameSplashTheme.dark,
+        onFinish: (context) => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MainMenu()),
+        ),
+      ),
       theme: ThemeData(
           textTheme: const TextTheme(
               headline1: TextStyle(
@@ -56,23 +64,44 @@ class _MyGameAppState extends State<MyGameApp>
 
   @override
   Widget build(BuildContext context) {
-    return FlameSplashScreen(
-        onFinish: (context) => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: ((context) => GameWidget(
-                      game: _myGame,
-                      overlayBuilderMap: {
-                        'Pause Button': pauseButton,
-                        'Lives': (context, game) {
-                          return livesHud(_myGame);
-                        },
-                        'Game Over': (context, game) {
-                          return gameOver(_myGame);
-                        }
-                      },
-                    )))),
-        theme: FlameSplashTheme.dark);
+    return GameWidget(
+      loadingBuilder: (conetxt) => Center(
+        child: SizedBox(
+          width: 200,
+          child: Material(
+            color: Colors.black,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    "Loading",
+                    style: TextStyle(
+                        fontFamily: "Audiowide",
+                        fontSize: 30,
+                        color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  LinearProgressIndicator(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      game: _myGame,
+      overlayBuilderMap: {
+        'Pause Button': pauseButton,
+        'Lives': (context, game) {
+          return livesHud(_myGame);
+        },
+        'Game Over': (icontext, game) {
+          return gameOver(context, _myGame);
+        }
+      },
+    );
   }
 
   Widget pauseButton(context, game) {

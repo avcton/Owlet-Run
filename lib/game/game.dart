@@ -11,11 +11,12 @@ class TinyGame extends FlameGame
     with KeyboardEvents, TapDetector, HasCollisionDetection {
   late Owlet owlet; // Animations for the Owlet
   late EnemyGenerator enemyGenerator;
-  late ParallaxComponent _parallaxComponent; // Map
+  late ParallaxComponent parallaxComponent; // Map
   late TextComponent scoreComponent;
   late TextComponent scoreTitle;
   late double score;
   bool isPaused = false;
+  double currentSpeed = 0.2;
 
   TinyGame() {
     enemyGenerator = EnemyGenerator();
@@ -27,7 +28,7 @@ class TinyGame extends FlameGame
   Future<void>? onLoad() async {
     owlet = await Owlet.create();
 
-    _parallaxComponent = await loadParallaxComponent(
+    parallaxComponent = await loadParallaxComponent(
       [
         // Parallax Forest Background
         ParallaxImageData('Background/Layer_0011_0.png'),
@@ -43,7 +44,7 @@ class TinyGame extends FlameGame
         ParallaxImageData('Background/Layer_0001_8.png'),
         ParallaxImageData('Background/Layer_0000_9.png'),
       ],
-      baseVelocity: Vector2(0.3, 0), // Map Move Speed
+      baseVelocity: Vector2(currentSpeed, 0), // Map Move Speed
       velocityMultiplierDelta: Vector2(1.8, 1.0),
     );
 
@@ -65,7 +66,7 @@ class TinyGame extends FlameGame
                 color: Colors.yellow)));
 
     addAll([
-      _parallaxComponent,
+      parallaxComponent,
       owlet,
       owlet.dust,
       enemyGenerator,
@@ -122,6 +123,8 @@ class TinyGame extends FlameGame
   void gameOver() async {
     if (owlet.life.value <= 0) {
       enemyGenerator.removeAllEnemy();
+      scoreComponent.removeFromParent();
+      scoreTitle.removeFromParent();
       owlet.die();
       await Future.delayed(const Duration(milliseconds: 500));
       overlays.add('Game Over');
