@@ -1,5 +1,5 @@
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:my_game/packages/audio_player.dart';
 
 class AboutApp extends StatelessWidget {
   const AboutApp({Key? key}) : super(key: key);
@@ -82,7 +82,8 @@ class AboutApp extends StatelessWidget {
             ),
             alignment: Alignment.topLeft,
             onPressed: () {
-              FlameAudio.play('click.wav');
+              // FlameAudio.play('click.wav');
+              AudioSfx.click.resume();
               Navigator.pop(context);
             },
           )),

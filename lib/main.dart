@@ -15,6 +15,7 @@ void main() async {
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
   await FlameAudio.audioCache.loadAll(['menu.mp3', 'click.wav']);
+  FlameAudio.bgm.initialize();
   runApp(const MyApp());
 }
 

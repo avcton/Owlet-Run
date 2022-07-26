@@ -1,6 +1,6 @@
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:my_game/game/game.dart';
+import 'package:my_game/packages/audio_player.dart';
 
 Widget livesHud(TinyGame gameref) {
   return ValueListenableBuilder(
@@ -8,7 +8,8 @@ Widget livesHud(TinyGame gameref) {
     builder: (BuildContext context, int value, Widget? child) {
       List<Widget> list = [];
       if (value <= 0) {
-        FlameAudio.play('death.mp3', volume: 70);
+        // FlameAudio.play('death.mp3', volume: 70);
+        AudioSfx.death.resume();
       }
       for (int i = 0; i < 3; i++) {
         list.add(Icon(

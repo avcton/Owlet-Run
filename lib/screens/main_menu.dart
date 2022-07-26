@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:my_game/main.dart';
+import 'package:my_game/packages/audio_player.dart';
 import 'package:my_game/screens/about.dart';
 import 'package:my_game/screens/feedback.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);
 
-  static final player = FlameAudio.bgm.audioPlayer;
+  static final player = FlameAudio.bgm;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    player.play(AssetSource('menu.mp3'));
-    player.setReleaseMode(ReleaseMode.loop);
+    player.play('menu.mp3');
     return Container(
       width: size.width,
       height: size.height,
@@ -39,7 +38,9 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: MaterialButton(
                   onPressed: () {
-                    FlameAudio.play('click.wav');
+                    // FlameAudio.play('click.wav');
+                    AudioSfx.click.resume();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -60,7 +61,9 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: MaterialButton(
                   onPressed: () {
-                    FlameAudio.play('click.wav');
+                    // FlameAudio.play('click.wav');
+                    AudioSfx.click.resume();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const AboutApp()),
@@ -79,7 +82,9 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: MaterialButton(
                   onPressed: () {
-                    FlameAudio.play('click.wav');
+                    // FlameAudio.play('click.wav');
+                    AudioSfx.click.resume();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
