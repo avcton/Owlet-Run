@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:my_game/game/game.dart';
+import 'package:my_game/packages/audio_player.dart';
 import 'package:my_game/packages/enemy_generator.dart';
 import 'package:my_game/screens/main_menu.dart';
 
@@ -43,6 +44,7 @@ Widget gameOver(BuildContext context, TinyGame gameref) {
             MaterialButton(
               color: Colors.blue,
               onPressed: () {
+                AudioSfx.click.resume();
                 gameref.overlays.remove('Game Over');
 
                 TinyGame.player.resume();
@@ -71,6 +73,7 @@ Widget gameOver(BuildContext context, TinyGame gameref) {
             MaterialButton(
               color: Colors.blue,
               onPressed: () {
+                AudioSfx.click.resume();
                 MainMenu.player.play('menu.mp3');
                 TinyGame.player.stop();
                 Navigator.pop(context);
