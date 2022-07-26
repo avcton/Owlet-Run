@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 
 class AppFeedback extends StatelessWidget {
@@ -5,6 +6,7 @@ class AppFeedback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Material(
       color: Colors.black,
       child: Container(
@@ -17,14 +19,14 @@ class AppFeedback extends StatelessWidget {
           Center(
               child: Card(
             color: Colors.black.withOpacity(0.5),
-            child: const Padding(
-                padding: EdgeInsets.all(40.0),
+            child: Padding(
+                padding: EdgeInsets.all(size.width - size.width * 93 / 100),
                 child: Text(
                   "avcton@gmail.com",
                   style: TextStyle(
                       fontFamily: 'Audiowide',
-                      color: Colors.blue,
-                      fontSize: 18),
+                      color: Colors.white,
+                      fontSize: size.height - size.height * 95 / 100),
                 )),
           )),
           Positioned(
@@ -36,6 +38,7 @@ class AppFeedback extends StatelessWidget {
             ),
             alignment: Alignment.topLeft,
             onPressed: () {
+              FlameAudio.play('click.wav');
               Navigator.pop(context);
             },
           )),

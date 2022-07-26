@@ -7,12 +7,14 @@ import 'package:my_game/game/game.dart';
 import 'package:my_game/screens/game_over.dart';
 import 'package:my_game/screens/lives.dart';
 import 'package:my_game/screens/main_menu.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
+  await FlameAudio.audioCache.loadAll(['menu.mp3', 'click.wav']);
   runApp(const MyApp());
 }
 
@@ -128,10 +130,12 @@ class _MyGameAppState extends State<MyGameApp>
   void playPauseTapped() {
     if (_myGame.isPaused) {
       _animationController.reverse();
+      TinyGame.player.resume();
       _myGame.resumeEngine();
       _myGame.isPaused = false;
     } else {
       _animationController.forward();
+      TinyGame.player.pause();
       _myGame.pauseEngine();
       _myGame.isPaused = true;
     }

@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 
 class AboutApp extends StatelessWidget {
@@ -5,6 +6,7 @@ class AboutApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Material(
       color: Colors.black,
       child: Container(
@@ -18,39 +20,52 @@ class AboutApp extends StatelessWidget {
               child: Card(
             color: Colors.black.withOpacity(0.5),
             child: Padding(
-              padding: const EdgeInsets.all(40.0),
+              padding: EdgeInsets.all(size.width - size.width * 95 / 100),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text("Credits",
                       style: TextStyle(
-                        fontSize: 40,
+                        fontSize: size.height - size.height * 90 / 100,
                         fontFamily: "Audiowide",
                         color: Colors.white,
                       )),
-                  SizedBox(height: 10),
+                  SizedBox(height: size.height - size.height * 98 / 100),
                   Text("Artwork",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: size.height - size.height * 96 / 100,
                         fontFamily: "Audiowide",
                         color: Colors.white,
                       )),
                   Text("edermuniz",
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: size.height - size.height * 95 / 100,
                         fontFamily: "Audiowide",
                         color: Colors.yellow,
                       )),
-                  SizedBox(height: 20),
+                  SizedBox(height: size.height - size.height * 98 / 100),
+                  Text("Music",
+                      style: TextStyle(
+                        fontSize: size.height - size.height * 96 / 100,
+                        fontFamily: "Audiowide",
+                        color: Colors.white,
+                      )),
+                  Text("ZapsPlat",
+                      style: TextStyle(
+                        fontSize: size.height - size.height * 95 / 100,
+                        fontFamily: "Audiowide",
+                        color: Colors.yellow,
+                      )),
+                  SizedBox(height: size.height - size.height * 98 / 100),
                   Text("Made by",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: size.height - size.height * 96 / 100,
                         fontFamily: "Audiowide",
                         color: Colors.white,
                       )),
                   Text("avcton",
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: size.height - size.height * 95 / 100,
                         fontFamily: "Audiowide",
                         color: Colors.yellow,
                       )),
@@ -67,6 +82,7 @@ class AboutApp extends StatelessWidget {
             ),
             alignment: Alignment.topLeft,
             onPressed: () {
+              FlameAudio.play('click.wav');
               Navigator.pop(context);
             },
           )),

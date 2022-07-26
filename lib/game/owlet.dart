@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:my_game/game/dust.dart';
 import 'package:my_game/game/enemy.dart';
@@ -130,6 +131,7 @@ class Owlet extends SpriteAnimationComponent with CollisionCallbacks {
 
   void jump() {
     if (onGround()) {
+      FlameAudio.play('jump.wav');
       !isHit ? idle() : hurt();
       speedY = initialV;
     }
@@ -139,6 +141,7 @@ class Owlet extends SpriteAnimationComponent with CollisionCallbacks {
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     if ((other is Enemy && !isHit)) {
       hurt();
+      FlameAudio.play('hurt.mp3');
       life.value -= 1;
       isHit = true;
       _timer.start();

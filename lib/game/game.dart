@@ -2,10 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_game/game/owlet.dart';
 import 'package:my_game/packages/enemy_generator.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class TinyGame extends FlameGame
     with KeyboardEvents, TapDetector, HasCollisionDetection {
@@ -18,6 +20,8 @@ class TinyGame extends FlameGame
   bool isPaused = false;
   double currentSpeed = 0.2;
 
+  static final player = FlameAudio.bgm.audioPlayer;
+
   TinyGame() {
     enemyGenerator = EnemyGenerator();
     scoreComponent = TextComponent();
@@ -27,6 +31,11 @@ class TinyGame extends FlameGame
   @override
   Future<void>? onLoad() async {
     owlet = await Owlet.create();
+
+    await FlameAudio.audioCache
+        .loadAll(['bgr.mp3', 'jump.wav', 'death.mp3', 'hurt.mp3']);
+    player.play(AssetSource('bgr.mp3'), volume: 80);
+    player.setReleaseMode(ReleaseMode.loop);
 
     parallaxComponent = await loadParallaxComponent(
       [
@@ -122,6 +131,7 @@ class TinyGame extends FlameGame
 
   void gameOver() async {
     if (owlet.life.value <= 0) {
+      player.stop();
       enemyGenerator.removeAllEnemy();
       scoreComponent.removeFromParent();
       scoreTitle.removeFromParent();

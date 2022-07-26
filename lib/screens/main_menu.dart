@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:my_game/main.dart';
 import 'package:my_game/screens/about.dart';
 import 'package:my_game/screens/feedback.dart';
+import 'package:flame_audio/flame_audio.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);
 
+  static final player = FlameAudio.bgm.audioPlayer;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    player.play(AssetSource('menu.mp3'));
+    player.setReleaseMode(ReleaseMode.loop);
     return Container(
       width: size.width,
       height: size.height,
@@ -33,11 +39,13 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: MaterialButton(
                   onPressed: () {
+                    FlameAudio.play('click.wav');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const MyGameApp()),
                     );
+                    player.stop();
                   },
                   color: Colors.blue,
                   child: Text("Play",
@@ -52,6 +60,7 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: MaterialButton(
                   onPressed: () {
+                    FlameAudio.play('click.wav');
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const AboutApp()),
@@ -70,6 +79,7 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: MaterialButton(
                   onPressed: () {
+                    FlameAudio.play('click.wav');
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -2,6 +2,8 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:my_game/game/game.dart';
 import 'package:my_game/packages/enemy_generator.dart';
+import 'package:my_game/screens/main_menu.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 Widget gameOver(BuildContext context, TinyGame gameref) {
   return Material(
@@ -44,6 +46,7 @@ Widget gameOver(BuildContext context, TinyGame gameref) {
               onPressed: () {
                 gameref.overlays.remove('Game Over');
 
+                TinyGame.player.resume();
                 gameref.enemyGenerator.resetTimer();
                 EnemyGenerator.spawnLevel = 0;
                 gameref.enemyGenerator.removeAllEnemy();
@@ -65,9 +68,12 @@ Widget gameOver(BuildContext context, TinyGame gameref) {
                 ),
               ),
             ),
+            SizedBox(height: gameref.size.y - gameref.size.y * 98 / 100),
             MaterialButton(
               color: Colors.blue,
               onPressed: () {
+                MainMenu.player.play(AssetSource('menu.mp3'));
+                TinyGame.player.stop();
                 Navigator.pop(context);
               },
               child: Text(
