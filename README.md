@@ -1,7 +1,7 @@
 # Owlet Run
 
 An infinite side scroller 2D runner game built in Flutter using Flame Engine.
-<br /> Currently available for Android/ Windows/ Browser.
+<br /> Currently available for Android/ Windows/ Web.
 <br /> IOS / macOS versions will be delayed due to compilation compatibility issues.
 
 # Things implemented so far
